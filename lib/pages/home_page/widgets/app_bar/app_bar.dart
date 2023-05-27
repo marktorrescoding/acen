@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:openbeta/pages/home_page/widgets/app_bar/user_profile.dart';
+import 'package:openbeta/pages/home_page/widgets/app_bar/user_profile_icon.dart';
 import 'package:openbeta/pages/home_page/widgets/app_bar/settings_button.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
