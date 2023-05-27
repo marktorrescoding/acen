@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     final location = await locationService.getCurrentLocation();
     if (location != null) {
       // Get user location and retrieve nearby areas
-      print('User Location: Latitude=${location.latitude}, Longitude=${location.longitude}');
+      // print('User Location: Latitude=${location.latitude}, Longitude=${location.longitude}');
       final areas = await areaService.getNearbyAreas(location.latitude, location.longitude);
       if (areas != null && areas.isNotEmpty) {
         // If nearby areas are found, navigate to the NearbyAreasPage

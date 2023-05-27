@@ -18,14 +18,21 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      centerTitle: true, // Center the title horizontally
-      title: Text(
-        'ASCENSUS',
-        style: TextStyle(
-          fontFamily: 'Roboto',
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.black, // Set the font color to black
+      centerTitle: true,
+      title: ShaderMask(
+        shaderCallback: (bounds) {
+          return LinearGradient(
+            colors: [Colors.black, Colors.grey[800]!], // Use Colors.grey[800] for a darker gray
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ).createShader(bounds);
+        },
+        child: Text(
+          'Ascensus',
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 22,
+          ),
         ),
       ),
       actions: [
