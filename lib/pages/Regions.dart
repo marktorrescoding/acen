@@ -8,36 +8,61 @@ class RegionPage extends StatefulWidget {
 
 class _RegionPageState extends State<RegionPage> {
   String selectedRegion = '';
-  List<String> southeastStates = [
-    'AL', 'AR', 'FL', 'GA', 'KY', 'LA', 'MS', 'NC', 'SC', 'TN', 'VA', 'WV',
-  ];
-  List<String> westStates = [
-    'AK', 'AZ', 'CA', 'CO', 'HI', 'ID', 'MT', 'NV', 'NM', 'OR', 'UT', 'WA', 'WY',
-  ];
-  List<String> southwestStates = ['AZ', 'NM', 'OK', 'TX'];
-  List<String> northeastStates = [
-    'CT', 'DE', 'ME', 'MD', 'MA', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT',
-  ];
-  List<String> midwestStates = [
-    'IL', 'IN', 'IA', 'KS', 'MI', 'MN', 'MO', 'NE', 'ND', 'OH', 'SD', 'WI',
-  ];
+  final Map<String, List<String>> regions = {
+    'Southeast': ['AL', 'AR', 'FL', 'GA', 'KY', 'LA', 'MS', 'NC', 'SC', 'TN', 'VA', 'WV'],
+    'West': ['AK', 'AZ', 'CA', 'CO', 'HI', 'ID', 'MT', 'NV', 'NM', 'OR', 'UT', 'WA', 'WY'],
+    'Southwest': ['AZ', 'NM', 'OK', 'TX'],
+    'Northeast': ['CT', 'DE', 'ME', 'MD', 'MA', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'],
+    'Midwest': ['IL', 'IN', 'IA', 'KS', 'MI', 'MN', 'MO', 'NE', 'ND', 'OH', 'SD', 'WI'],
+  };
 
-  List<String> getStatesForRegion(String region) {
-    switch (region) {
-      case 'Southeast':
-        return southeastStates;
-      case 'West':
-        return westStates;
-      case 'Southwest':
-        return southwestStates;
-      case 'Northeast':
-        return northeastStates;
-      case 'Midwest':
-        return midwestStates;
-      default:
-        return [];
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Select a Region'),
+      ),
+      body: ListView.separated(
+        padding: EdgeInsets.all(16.0),
+        itemCount: regions.keys.length,
+        itemBuilder: (BuildContext context, int index) {
+          String regionName = regions.keys.elementAt(index);
+          return RegionButton(
+            regionName: regionName,
+            states: regions[regionName]!,
+            isSelected: selectedRegion == regionName,
+            onTap: () {
+              setState(() {
+                selectedRegion = selectedRegion == regionName ? '' : regionName;
+              });
+            },
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          if (index == regions.keys.length - 1) {
+            // No separator after the last item
+            return SizedBox.shrink();
+          } else {
+            return SizedBox(height: 16);  // Use a SizedBox as a divider.
+          }
+        },
+      ),
+    );
   }
+}
+
+class RegionButton extends StatelessWidget {
+  final String regionName;
+  final List<String> states;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  RegionButton({
+    required this.regionName,
+    required this.states,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   final TextStyle regionButtonStyle = GoogleFonts.roboto(
     fontSize: 18,
@@ -50,76 +75,10 @@ class _RegionPageState extends State<RegionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Select a Region'),
-      ),
-      body: ListView.separated(
-        padding: EdgeInsets.all(16.0),
-        itemCount: 5,
-        itemBuilder: (BuildContext context, int index) {
-          switch (index) {
-            case 0:
-              return _buildRegionButton(
-                context,
-                'Southeast',
-                regionButtonStyle,
-              );
-            case 1:
-              return _buildRegionButton(
-                context,
-                'West',
-                regionButtonStyle,
-              );
-            case 2:
-              return _buildRegionButton(
-                context,
-                'Southwest',
-                regionButtonStyle,
-              );
-            case 3:
-              return _buildRegionButton(
-                context,
-                'Northeast',
-                regionButtonStyle,
-              );
-            case 4:
-              return _buildRegionButton(
-                context,
-                'Midwest',
-                regionButtonStyle,
-              );
-            default:
-              return Container();
-          }
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          if (index == 4) {
-            // No separator after the last item
-            return SizedBox.shrink();
-          } else {
-            return SizedBox(height: 16);  // Use a SizedBox as a divider.
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildRegionButton(
-      BuildContext context,
-      String regionName,
-      TextStyle textStyle,
-      ) {
-    bool isRegionSelected = selectedRegion == regionName;
-
     return Column(
       children: [
         InkWell(
-          onTap: () {
-            setState(() {
-              selectedRegion = isRegionSelected ? '' : regionName;
-            });
-          },
+          onTap: onTap,
           splashColor: Colors.transparent,
           child: Container(
             alignment: Alignment.centerLeft,
@@ -129,14 +88,12 @@ class _RegionPageState extends State<RegionPage> {
               children: [
                 Text(
                   regionName,
-                  style: textStyle.copyWith(
+                  style: regionButtonStyle.copyWith(
                     color: Colors.black,
                   ),
                 ),
                 Icon(
-                  isRegionSelected
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  isSelected ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: Colors.black,
                 ),
               ],
@@ -150,7 +107,7 @@ class _RegionPageState extends State<RegionPage> {
             alignment: Alignment.topLeft,
             child: Wrap(
               alignment: WrapAlignment.start,
-              children: getStatesForRegion(regionName).map((abbreviation) {
+              children: states.map((abbreviation) {
                 return ElevatedButton(
                   onPressed: () {
                     // Action for state button
@@ -166,9 +123,7 @@ class _RegionPageState extends State<RegionPage> {
               }).toList(),
             ),
           ),
-          crossFadeState: isRegionSelected
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
+          crossFadeState: isSelected ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         ),
       ],
     );
