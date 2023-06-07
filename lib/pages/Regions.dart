@@ -16,6 +16,17 @@ class _RegionPageState extends State<RegionPage> {
     'Midwest': ['IL', 'IN', 'IA', 'KS', 'MI', 'MN', 'MO', 'NE', 'ND', 'OH', 'SD', 'WI'],
   };
 
+  Map<String, bool> downloadStatus = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    regions.values.expand((v) => v).forEach((state) {
+      downloadStatus[state] = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +42,7 @@ class _RegionPageState extends State<RegionPage> {
             regionName: regionName,
             states: regions[regionName]!,
             isSelected: selectedRegion == regionName,
+            downloadStatus: downloadStatus,
             onTap: () {
               setState(() {
                 selectedRegion = selectedRegion == regionName ? '' : regionName;
@@ -38,14 +50,7 @@ class _RegionPageState extends State<RegionPage> {
             },
           );
         },
-        separatorBuilder: (BuildContext context, int index) {
-          if (index == regions.keys.length - 1) {
-            // No separator after the last item
-            return SizedBox.shrink();
-          } else {
-            return SizedBox(height: 16);  // Use a SizedBox as a divider.
-          }
-        },
+        separatorBuilder: (BuildContext context, int index) => SizedBox(height: 16),
       ),
     );
   }
@@ -56,18 +61,21 @@ class RegionButton extends StatelessWidget {
   final List<String> states;
   final bool isSelected;
   final VoidCallback onTap;
+  final Map<String, bool> downloadStatus;
 
   RegionButton({
     required this.regionName,
     required this.states,
     required this.isSelected,
     required this.onTap,
+    required this.downloadStatus,
   });
 
   final TextStyle regionButtonStyle = GoogleFonts.roboto(
     fontSize: 18,
     color: Colors.white,
   );
+
   final TextStyle stateButtonStyle = GoogleFonts.roboto(
     fontSize: 14,
     color: Colors.white,
@@ -107,17 +115,34 @@ class RegionButton extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Wrap(
               alignment: WrapAlignment.start,
+              spacing: 8.0, // gap between adjacent chips
+              runSpacing: 4.0, // gap between lines
               children: states.map((abbreviation) {
-                return ElevatedButton(
+                return OutlinedButton(
                   onPressed: () {
-                    // Action for state button
+                    downloadStatus[abbreviation] = !downloadStatus[abbreviation]!;
+                    (context as Element).markNeedsBuild();
                   },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey,
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    side: BorderSide(color: Colors.grey),
                   ),
-                  child: Text(
-                    abbreviation,
-                    style: stateButtonStyle,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        abbreviation,
+                        style: stateButtonStyle.copyWith(color: Colors.black),
+                      ),
+                      if (downloadStatus[abbreviation]!)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            Icons.cloud_done,
+                            color: Colors.green,
+                          ),
+                        ),
+                    ],
                   ),
                 );
               }).toList(),
