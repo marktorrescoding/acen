@@ -1,5 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:openbeta/pages/state_areas_page.dart';
+import 'package:openbeta/services/localstore.dart';
+
+// Mapping of abbreviations to full state names
+final Map<String, String> stateNames = {
+  'AL': 'Alabama',
+  'AR': 'Arkansas',
+  'FL': 'Florida',
+  'GA': 'Georgia',
+  'KY': 'Kentucky',
+  'LA': 'Louisiana',
+  'MS': 'Mississippi',
+  'NC': 'North Carolina',
+  'SC': 'South Carolina',
+  'TN': 'Tennessee',
+  'VA': 'Virginia',
+  'WV': 'West Virginia',
+  'AK': 'Alaska',
+  'AZ': 'Arizona',
+  'CA': 'California',
+  'CO': 'Colorado',
+  'HI': 'Hawaii',
+  'ID': 'Idaho',
+  'MT': 'Montana',
+  'NV': 'Nevada',
+  'NM': 'New Mexico',
+  'OR': 'Oregon',
+  'UT': 'Utah',
+  'WA': 'Washington',
+  'WY': 'Wyoming',
+  'OK': 'Oklahoma',
+  'TX': 'Texas',
+  'CT': 'Connecticut',
+  'DE': 'Delaware',
+  'ME': 'Maine',
+  'MD': 'Maryland',
+  'MA': 'Massachusetts',
+  'NH': 'New Hampshire',
+  'NJ': 'New Jersey',
+  'NY': 'New York',
+  'PA': 'Pennsylvania',
+  'RI': 'Rhode Island',
+  'VT': 'Vermont',
+  'IL': 'Illinois',
+  'IN': 'Indiana',
+  'IA': 'Iowa',
+  'KS': 'Kansas',
+  'MI': 'Michigan',
+  'MN': 'Minnesota',
+  'MO': 'Missouri',
+  'NE': 'Nebraska',
+  'ND': 'North Dakota',
+  'OH': 'Ohio',
+  'SD': 'South Dakota',
+  'WI': 'Wisconsin',
+};
 
 class RegionPage extends StatefulWidget {
   @override
@@ -22,8 +78,9 @@ class _RegionPageState extends State<RegionPage> {
   void initState() {
     super.initState();
 
-    regions.values.expand((v) => v).forEach((state) {
-      downloadStatus[state] = false;
+    regions.values.expand((v) => v).forEach((state) async {
+      downloadStatus[state] = await LocalStore.isAreaDownloaded(state);
+      setState(() {});
     });
   }
 
@@ -118,10 +175,17 @@ class RegionButton extends StatelessWidget {
               spacing: 8.0, // gap between adjacent chips
               runSpacing: 4.0, // gap between lines
               children: states.map((abbreviation) {
+                final isDownloaded = downloadStatus[abbreviation]!;
+
                 return OutlinedButton(
                   onPressed: () {
-                    downloadStatus[abbreviation] = !downloadStatus[abbreviation]!;
-                    (context as Element).markNeedsBuild();
+                    // Navigate to the StateAreasPage with full state name
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StateAreasPage(state: stateNames[abbreviation]!),
+                      ),
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -134,7 +198,7 @@ class RegionButton extends StatelessWidget {
                         abbreviation,
                         style: stateButtonStyle.copyWith(color: Colors.black),
                       ),
-                      if (downloadStatus[abbreviation]!)
+                      if (isDownloaded)
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Icon(
