@@ -13,6 +13,7 @@ class StateAreasPage extends StatefulWidget {
 
 class _StateAreasPageState extends State<StateAreasPage> {
   List<String> areaNames = [];
+  List<String> downloadedStates = [];
   bool isDownloaded = false;
 
   @override
@@ -22,10 +23,9 @@ class _StateAreasPageState extends State<StateAreasPage> {
   }
 
   void loadDownloadedAreas() async {
-    List<String> downloadedAreas = await LocalStore.getDownloadedAreas();
+    downloadedStates = await LocalStore.getDownloadedStates();
     setState(() {
-      areaNames = downloadedAreas;
-      isDownloaded = areaNames.contains(widget.state);
+      isDownloaded = downloadedStates.contains(widget.state);
     });
   }
 
@@ -75,36 +75,46 @@ class _StateAreasPageState extends State<StateAreasPage> {
             ),
         ],
       ),
-      body: Query(
-        options: QueryOptions(
-          document: gql(readAreas),
-        ),
-        builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
-          if (result.hasException) {
-            return Text(result.exception.toString());
-          }
+      body: Column(
+        children: [
+          Expanded(
+            child: Query(
+              options: QueryOptions(
+                document: gql(readAreas),
+              ),
+              builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+                if (result.hasException) {
+                  return Text(result.exception.toString());
+                }
 
-          if (result.isLoading) {
-            return CircularProgressIndicator();
-          }
+                if (result.isLoading) {
+                  return CircularProgressIndicator();
+                }
 
-          List areas = result.data!['areas'];
-          List children = [];
-          areas.forEach((area) {
-            children.addAll(area['children']);
-          });
+                List areas = result.data!['areas'];
+                List children = [];
+                areas.forEach((area) {
+                  children.addAll(area['children']);
+                });
 
-          return ListView.builder(
-            itemCount: children.length,
-            itemBuilder: (context, index) {
-              final areaName = children[index]['areaName'] as String;
+                return ListView.builder(
+                  itemCount: children.length,
+                  itemBuilder: (context, index) {
+                    final areaName = children[index]['areaName'] as String;
 
-              return ListTile(
-                title: Text(areaName),
-              );
-            },
-          );
-        },
+                    return ListTile(
+                      title: Text(areaName),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: Text('Downloaded states: ${downloadedStates.join(', ')}'),
+          ),
+        ],
       ),
     );
   }
@@ -112,6 +122,7 @@ class _StateAreasPageState extends State<StateAreasPage> {
   void saveData(String area) async {
     areaNames.add(area);
     await LocalStore.saveAreaNames(areaNames);
+    await LocalStore.saveDownloadedState(widget.state);
     setState(() {
       isDownloaded = true;
     });
@@ -127,6 +138,7 @@ class _StateAreasPageState extends State<StateAreasPage> {
   void deleteData(String area) async {
     areaNames.remove(area);
     await LocalStore.saveAreaNames(areaNames);
+    await LocalStore.deleteDownloadedState(widget.state);
     setState(() {
       isDownloaded = false;
     });

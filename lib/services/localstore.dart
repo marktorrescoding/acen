@@ -25,4 +25,25 @@ class LocalStore {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('areaNames');
   }
+
+  static Future<void> saveDownloadedState(String state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> downloadedStates = prefs.getStringList('downloadedStates') ?? [];
+    if (!downloadedStates.contains(state)) {
+      downloadedStates.add(state);
+      await prefs.setStringList('downloadedStates', downloadedStates);
+    }
+  }
+
+  static Future<void> deleteDownloadedState(String state) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> downloadedStates = prefs.getStringList('downloadedStates') ?? [];
+    downloadedStates.remove(state);
+    await prefs.setStringList('downloadedStates', downloadedStates);
+  }
+
+  static Future<List<String>> getDownloadedStates() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('downloadedStates') ?? [];
+  }
 }

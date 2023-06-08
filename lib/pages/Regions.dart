@@ -78,8 +78,9 @@ class _RegionPageState extends State<RegionPage> {
   void initState() {
     super.initState();
 
-    regions.values.expand((v) => v).forEach((state) async {
-      downloadStatus[state] = await LocalStore.isAreaDownloaded(state);
+    regions.values.expand((v) => v).forEach((stateAbbreviation) async {
+      List<String> downloadedStates = await LocalStore.getDownloadedStates();
+      downloadStatus[stateAbbreviation] = downloadedStates.contains(stateNames[stateAbbreviation]);
       setState(() {});
     });
   }
@@ -176,7 +177,6 @@ class RegionButton extends StatelessWidget {
               runSpacing: 4.0, // gap between lines
               children: states.map((abbreviation) {
                 final isDownloaded = downloadStatus[abbreviation]!;
-
                 return OutlinedButton(
                   onPressed: () {
                     // Navigate to the StateAreasPage with full state name
@@ -189,24 +189,12 @@ class RegionButton extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    side: BorderSide(color: Colors.grey),
+                    side: BorderSide(color: isDownloaded ? Colors.green : Colors.grey),
+                    backgroundColor: isDownloaded ? Colors.green : null,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        abbreviation,
-                        style: stateButtonStyle.copyWith(color: Colors.black),
-                      ),
-                      if (isDownloaded)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Icon(
-                            Icons.cloud_done,
-                            color: Colors.green,
-                          ),
-                        ),
-                    ],
+                  child: Text(
+                    abbreviation,
+                    style: stateButtonStyle.copyWith(color: isDownloaded ? Colors.white : Colors.black),
                   ),
                 );
               }).toList(),
