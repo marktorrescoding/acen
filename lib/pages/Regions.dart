@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:openbeta/pages/state_areas_page.dart';
 import 'package:openbeta/services/localstore.dart';
 
-// Mapping of abbreviations to full state names
 final Map<String, String> stateNames = {
   'AL': 'Alabama',
   'AR': 'Arkansas',
@@ -62,8 +61,9 @@ class RegionPage extends StatefulWidget {
   _RegionPageState createState() => _RegionPageState();
 }
 
-class _RegionPageState extends State<RegionPage> {
+class _RegionPageState extends State<RegionPage> with WidgetsBindingObserver {
   String selectedRegion = '';
+
   final Map<String, List<String>> regions = {
     'Southeast': ['AL', 'AR', 'FL', 'GA', 'KY', 'LA', 'MS', 'NC', 'SC', 'TN', 'VA', 'WV'],
     'West': ['AK', 'AZ', 'CA', 'CO', 'HI', 'ID', 'MT', 'NV', 'NM', 'OR', 'UT', 'WA', 'WY'],
@@ -77,11 +77,33 @@ class _RegionPageState extends State<RegionPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+    updateDownloadStatus();
+  }
 
-    regions.values.expand((v) => v).forEach((stateAbbreviation) async {
-      List<String> downloadedStates = await LocalStore.getDownloadedStates();
-      downloadStatus[stateAbbreviation] = downloadedStates.contains(stateNames[stateAbbreviation]);
-      setState(() {});
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      updateDownloadStatus();
+    }
+  }
+
+  void updateDownloadStatus() async {
+    Map<String, bool> newDownloadStatus = {};
+    List<String> downloadedStates = await LocalStore.getDownloadedStates();
+    for (var abbreviation in regions.values.expand((v) => v)) {
+      newDownloadStatus[abbreviation] = downloadedStates.contains(stateNames[abbreviation]);
+    }
+
+    setState(() {
+      downloadStatus = newDownloadStatus;
     });
   }
 
@@ -106,6 +128,7 @@ class _RegionPageState extends State<RegionPage> {
                 selectedRegion = selectedRegion == regionName ? '' : regionName;
               });
             },
+            onStateDownloaded: updateDownloadStatus,
           );
         },
         separatorBuilder: (BuildContext context, int index) => SizedBox(height: 16),
@@ -120,6 +143,7 @@ class RegionButton extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
   final Map<String, bool> downloadStatus;
+  final VoidCallback onStateDownloaded;
 
   RegionButton({
     required this.regionName,
@@ -127,6 +151,7 @@ class RegionButton extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     required this.downloadStatus,
+    required this.onStateDownloaded,
   });
 
   final TextStyle regionButtonStyle = GoogleFonts.roboto(
@@ -178,14 +203,16 @@ class RegionButton extends StatelessWidget {
               children: states.map((abbreviation) {
                 final isDownloaded = downloadStatus[abbreviation]!;
                 return OutlinedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // Navigate to the StateAreasPage with full state name
-                    Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => StateAreasPage(state: stateNames[abbreviation]!),
                       ),
                     );
+                    // Call the callback
+                    onStateDownloaded();
                   },
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
