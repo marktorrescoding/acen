@@ -216,12 +216,21 @@ class RegionButton extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    side: BorderSide(color: isDownloaded ? Colors.green : Colors.grey),
-                    backgroundColor: isDownloaded ? Colors.green : null,
+                    side: BorderSide(color: Colors.grey),
                   ),
-                  child: Text(
-                    abbreviation,
-                    style: stateButtonStyle.copyWith(color: isDownloaded ? Colors.white : Colors.black),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        abbreviation,
+                        style: stateButtonStyle.copyWith(color: Colors.black),
+                      ),
+                      if (isDownloaded)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: Icon(Icons.cloud_download, size: 16, color: Colors.green),
+                        )
+                    ],
                   ),
                 );
               }).toList(),
