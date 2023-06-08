@@ -220,7 +220,7 @@ class RegionButton extends StatelessWidget {
               spacing: 8.0, // gap between adjacent chips
               runSpacing: 4.0, // gap between lines
               children: states.map((abbreviation) {
-                final isDownloaded = downloadStatus[abbreviation]!;
+                final isDownloaded = downloadStatus[abbreviation] ?? false;
                 return OutlinedButton(
                   onPressed: () async {
                     // Navigate to the StateAreasPage with full state name
