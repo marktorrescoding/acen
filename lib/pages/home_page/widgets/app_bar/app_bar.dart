@@ -12,27 +12,41 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF00BFA5), Color(0xFF00ACC1)],
+            colors: [Colors.greenAccent, Colors.green], // Reversed the order of colors
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
       ),
       centerTitle: true,
-      title: ShaderMask(
-        shaderCallback: (bounds) {
-          return LinearGradient(
-            colors: [Colors.black, Colors.grey[800]!], // Use Colors.grey[800] for a darker gray
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ).createShader(bounds);
-        },
-        child: Text(
-          'Ascensus',
-          style: TextStyle(
-            fontFamily: 'Roboto',
-            fontSize: 22,
-          ),
+      leading: Container(),
+      title: IntrinsicWidth(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ShaderMask(
+              shaderCallback: (bounds) {
+                return LinearGradient(
+                  colors: [Colors.grey[800]!, Colors.black], // Reversed the order of colors
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ).createShader(bounds);
+              },
+              child: Text(
+                'Ascensus',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 22,
+                ),
+              ),
+            ),
+            SizedBox(width: 8),
+            Icon(
+              Icons.landscape,
+              color: Colors.black,
+              size: 24,
+            ),
+          ],
         ),
       ),
       actions: [

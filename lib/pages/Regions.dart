@@ -111,17 +111,26 @@ class _RegionPageState extends State<RegionPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.green, Colors.greenAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         title: Text(
-          'SELECT REGION',
+          'Select Region',
           style: TextStyle(
             fontSize: 20,
-            fontWeight: FontWeight.normal,
-            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
         centerTitle: true,
       ),
+
       backgroundColor: Colors.black,
       body: ListView.separated(
         padding: EdgeInsets.all(16.0),

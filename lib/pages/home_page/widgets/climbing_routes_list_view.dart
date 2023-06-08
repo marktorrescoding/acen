@@ -14,35 +14,38 @@ class ClimbingRoutesListView extends StatelessWidget {
     } else if (snapshot.hasError) {
       return Center(child: Text('Failed to load climbs'));
     } else if (snapshot.hasData) {
-      return ListView.builder(
-        itemCount: snapshot.data!.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RouteDetailsPage(route: snapshot.data![index]),
+      return Container(
+        color: Colors.white,
+        child: ListView.builder(
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RouteDetailsPage(route: snapshot.data![index]),
+                  ),
+                );
+              },
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      snapshot.data![index].name,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    Text(
+                      '${snapshot.data![index].yds}',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
                 ),
-              );
-            },
-            child: ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    snapshot.data![index].name,
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  Text(
-                    '${snapshot.data![index].yds}',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ],
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       );
     }
     return SizedBox.shrink();

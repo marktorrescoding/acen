@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   Future<List<ClimbingRoute>>? _apiSearchResult;
   Future<List<ClimbingRoute>>? _localSearchResult;
   List<String>? _nearbyAreas;
+  bool _isSwitched = true;
 
   @override
   void initState() {
@@ -78,56 +79,67 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _dismissKeyboard() {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(),
-      backgroundColor: Colors.black, // Set the background color to black
-      body: Column(
-        children: [
-          CustomSearchBar(
-            labelText: 'Search API',
-            controller: _apiController,
-            onPressed: _searchApi,
-          ),
-          CustomSearchBar(
-            labelText: 'Search Local',
-            controller: _localController,
-            onPressed: _searchLocal,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return GestureDetector(
+      onTap: _dismissKeyboard,
+      child: Scaffold(
+        appBar: AppBarWidget(),
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Column(
             children: [
-              Button(
-                text: 'Regions',
-                icon: Icons.location_on,
-                onPressed: _navigateToRegionsPage,
+              CustomSearchBar(
+                labelText: _isSwitched ? 'Search API' : 'Search Local',
+                controller: _isSwitched ? _apiController : _localController,
+                onPressed: _isSwitched ? _searchApi : _searchLocal,
+                isSwitched: _isSwitched,
+                onSwitched: (value) {
+                  setState(() {
+                    _isSwitched = value;
+                  });
+                },
               ),
-              Button(
-                text: 'Areas Near Me',
-                icon: Icons.near_me,
-                onPressed: _getNearbyAreas,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+
+                  Button(
+                    text: 'Regions',
+                    icon: Icons.location_on,
+                    onPressed: _navigateToRegionsPage,
+                  ),
+                  Button(
+                    text: 'Areas Near Me',
+                    icon: Icons.near_me,
+                    onPressed: _getNearbyAreas,
+                  ),
+                ],
+              ),
+              if (_nearbyAreas != null) NearbyAreas(areas: _nearbyAreas!),
+              Expanded(
+                child: FutureBuilder<List<ClimbingRoute>>(
+                  future: _apiSearchResult,
+                  builder: (context, snapshot) {
+                    return ClimbingRoutesListView(snapshot: snapshot);
+                  },
+                ),
+              ),
+              Expanded(
+                child: FutureBuilder<List<ClimbingRoute>>(
+                  future: _localSearchResult,
+                  builder: (context, snapshot) {
+                    return ClimbingRoutesListView(snapshot: snapshot);
+                  },
+                ),
               ),
             ],
           ),
-          if (_nearbyAreas != null) NearbyAreas(areas: _nearbyAreas!),
-          Expanded(
-            child: FutureBuilder<List<ClimbingRoute>>(
-              future: _apiSearchResult,
-              builder: (context, snapshot) {
-                return ClimbingRoutesListView(snapshot: snapshot);
-              },
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<List<ClimbingRoute>>(
-              future: _localSearchResult,
-              builder: (context, snapshot) {
-                return ClimbingRoutesListView(snapshot: snapshot);
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
