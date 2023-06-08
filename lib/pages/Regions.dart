@@ -111,8 +111,18 @@ class _RegionPageState extends State<RegionPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select a Region'),
+        backgroundColor: Colors.black,
+        title: Text(
+          'SELECT REGION',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
+      backgroundColor: Colors.black,
       body: ListView.separated(
         padding: EdgeInsets.all(16.0),
         itemCount: regions.keys.length,
@@ -161,7 +171,7 @@ class RegionButton extends StatelessWidget {
 
   final TextStyle stateButtonStyle = GoogleFonts.roboto(
     fontSize: 14,
-    color: Colors.white,
+    color: Colors.black,
   );
 
   @override
@@ -178,14 +188,14 @@ class RegionButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  regionName,
+                  regionName.toUpperCase(),
                   style: regionButtonStyle.copyWith(
-                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
                   ),
                 ),
                 Icon(
                   isSelected ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ],
             ),
@@ -217,13 +227,14 @@ class RegionButton extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     side: BorderSide(color: Colors.grey),
+                    backgroundColor: Colors.white,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         abbreviation,
-                        style: stateButtonStyle.copyWith(color: Colors.black),
+                        style: stateButtonStyle,
                       ),
                       if (isDownloaded)
                         Padding(
