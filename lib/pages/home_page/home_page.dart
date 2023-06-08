@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   void _navigateToRegionsPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => RegionPage()), // Navigate to the regions page
+      MaterialPageRoute(builder: (context) => RegionPage()),
     );
   }
 
@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(),
+      backgroundColor: Colors.black, // Set the background color to black
       body: Column(
         children: [
           CustomSearchBar(
@@ -94,9 +95,20 @@ class _HomePageState extends State<HomePage> {
             controller: _localController,
             onPressed: _searchLocal,
           ),
-          Button(
-            text: 'Areas Near Me',
-            onPressed: _getNearbyAreas,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Button(
+                text: 'Regions',
+                icon: Icons.location_on,
+                onPressed: _navigateToRegionsPage,
+              ),
+              Button(
+                text: 'Areas Near Me',
+                icon: Icons.near_me,
+                onPressed: _getNearbyAreas,
+              ),
+            ],
           ),
           if (_nearbyAreas != null) NearbyAreas(areas: _nearbyAreas!),
           Expanded(
@@ -115,11 +127,37 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          ElevatedButton(
-            onPressed: _navigateToRegionsPage,
-            child: Text('Regions'),
-          ),
         ],
+      ),
+    );
+  }
+}
+
+class Button extends StatelessWidget {
+  final String text;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const Button({
+    required this.text,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, color: Colors.black),
+      label: Text(
+        text,
+        style: TextStyle(color: Colors.black),
+      ),
+      style: ElevatedButton.styleFrom(
+        primary: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }

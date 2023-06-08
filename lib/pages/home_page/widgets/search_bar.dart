@@ -18,12 +18,16 @@ class CustomSearchBar extends StatelessWidget {
       child: TextField(
         controller: controller,
         onSubmitted: (_) => onPressed(),
+        style: TextStyle(color: Colors.black), // Set the text color to black
         decoration: InputDecoration(
           labelText: labelText,
+          labelStyle: TextStyle(color: Colors.black), // Set the label color to black
           suffixIcon: IconButton(
             icon: Icon(Icons.search),
             onPressed: onPressed,
           ),
+          filled: true, // Set the background color to white
+          fillColor: Colors.white, // Set the background color to white
         ),
       ),
     );
