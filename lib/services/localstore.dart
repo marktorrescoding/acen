@@ -1,11 +1,17 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:openbeta/models/area.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class LocalStore {
-  static Future<void> saveAreaNames(List<String> areaNames) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('areaNames', areaNames);
+  static Future<void> saveAreas(Area areaData) async {
+    final box = await Hive.openBox<Area>('areasBox');
+    await box.put(areaData.areaName, areaData);
   }
-
+  static Future<Area?> getArea(String areaName) async {
+    final box = await Hive.openBox<Area>('areasBox');
+    return box.get(areaName);
+  }
   static Future<List<String>?> getAreaNames() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('areaNames');
@@ -45,5 +51,28 @@ class LocalStore {
   static Future<List<String>> getDownloadedStates() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('downloadedStates') ?? [];
+  }
+
+  static Future<void> deleteState(String state) async {
+    final box = await Hive.openBox<Area>('areasBox');
+    await box.delete(state);
+  }
+
+  static Future<void> updateState(String state, String areaName, bool isLeaf, List<Area> children) async {
+    final box = await Hive.openBox<Area>('areasBox');
+    final existingArea = box.get(state);
+
+    if (existingArea == null) {
+      // State not found, handle the error or return
+      return;
+    }
+
+    final updatedArea = Area(
+      areaName: areaName,
+      isLeaf: isLeaf,
+      children: children,
+    );
+
+    await box.put(state, updatedArea);
   }
 }

@@ -1,16 +1,31 @@
+import 'package:hive/hive.dart';
+part 'area.g.dart';
+
+@HiveType(typeId: 0)
 class Area {
-  final String name;
-  final String location;
-  // Add more fields as needed
+  @HiveField(0)
+  final String areaName;
 
-  Area({required this.name, required this.location});
+  @HiveField(1)
+  final bool isLeaf;
 
-  // Factory constructor for creating a new Area object from a map
-  factory Area.fromJson(Map<String, dynamic> json) {
-    return Area(
-      name: json['name'],
-      location: json['location'],
-      // add more fields as needed
-    );
+  @HiveField(2)
+  final List<Area> children;
+
+  Area({required this.areaName, required this.isLeaf, required this.children});
+
+  factory Area.fromMap(Map<String, dynamic> map) {
+    final areaName = map['areaName'] as String;
+    final isLeaf = map['metadata']['leaf'] as bool;
+
+    List<Area> children = [];
+    if (map['children'] != null) {
+      final childrenData = map['children'] as List<dynamic>;
+      children = childrenData.map((data) => Area.fromMap(data)).toList();
+    }
+
+    return Area(areaName: areaName, isLeaf: isLeaf, children: children);
   }
+
+
 }

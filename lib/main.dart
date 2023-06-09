@@ -4,8 +4,15 @@ import 'package:openbeta/effects/splash_screen.dart';
 import 'package:openbeta/services/test_connection_service.dart';
 import 'package:graphql/client.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:openbeta/models/area.dart';
 
-void main() {
+
+
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(AreaAdapter());
   // Initialize HttpLink with your GraphQL endpoint.
   final HttpLink httpLink = HttpLink('https://api.openbeta.io/graphql');
   TestConnectionService(httpLink).testConnection(); // call the testConnection method

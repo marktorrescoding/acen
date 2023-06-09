@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:openbeta/services/localstore.dart';
+import 'package:openbeta/models/area.dart';
+import 'package:openbeta/pages/subareaspage.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class StateAreasPage extends StatefulWidget {
   final String state;
@@ -12,9 +16,10 @@ class StateAreasPage extends StatefulWidget {
 }
 
 class _StateAreasPageState extends State<StateAreasPage> {
-  List<String> areaNames = [];
+  List<dynamic> areaNames = [];
   List<String> downloadedStates = [];
   bool isDownloaded = false;
+  List<Area> areasData = [];
 
   @override
   void initState() {
@@ -32,14 +37,40 @@ class _StateAreasPageState extends State<StateAreasPage> {
   @override
   Widget build(BuildContext context) {
     String readAreas = """
-    query MyQuery {
-      areas(filter: {area_name: {match: "${widget.state}"}}) {
-        children {
-          areaName
-          id
+      query MyQuery {
+        areas(filter: {area_name: {match: "${widget.state}"}}) {
+          children {
+            areaName
+            metadata {
+              leaf
+            }
+            children {
+              areaName
+              metadata {
+                leaf
+              }
+              children {
+                areaName
+                metadata {
+                  leaf
+                }
+                children {
+                  areaName
+                  metadata {
+                    leaf
+                  }
+                  children {
+                    areaName
+                    metadata {
+                      leaf
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
-    }
     """;
 
     return Scaffold(
@@ -50,9 +81,7 @@ class _StateAreasPageState extends State<StateAreasPage> {
             IconButton(
               icon: const Icon(Icons.download),
               tooltip: 'Download Area Names',
-              onPressed: () {
-                saveData(widget.state);
-              },
+              onPressed: saveData,
             ),
           if (isDownloaded)
             Row(
@@ -91,19 +120,28 @@ class _StateAreasPageState extends State<StateAreasPage> {
                   return CircularProgressIndicator();
                 }
 
-                List areas = result.data!['areas'];
-                List children = [];
-                areas.forEach((area) {
-                  children.addAll(area['children']);
-                });
+                List<Map<String, dynamic>> areas = List<Map<String, dynamic>>.from(result.data!['areas'][0]['children']);
+
+                areasData = areas.map((areaData) => Area.fromMap(areaData)).toList();
 
                 return ListView.builder(
-                  itemCount: children.length,
+                  itemCount: areas.length,
                   itemBuilder: (context, index) {
-                    final areaName = children[index]['areaName'] as String;
+                    final areaData = areas[index];
+                    final area = Area.fromMap(areaData);
 
-                    return ListTile(
-                      title: Text(areaName),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SubAreasPage(area: area),
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        title: Text(area.areaName),
+                      ),
                     );
                   },
                 );
@@ -119,15 +157,15 @@ class _StateAreasPageState extends State<StateAreasPage> {
     );
   }
 
-  void saveData(String area) async {
-    areaNames.add(area);
-    await LocalStore.saveAreaNames(areaNames);
+  void saveData() async {
+    for (var data in areasData) {
+      await LocalStore.saveAreas(data);
+    }
     await LocalStore.saveDownloadedState(widget.state);
     setState(() {
       isDownloaded = true;
     });
 
-    // Show a success message using a SnackBar
     final snackBar = SnackBar(
       content: Text('Areas successfully downloaded!'),
       duration: Duration(milliseconds: 1500),
@@ -135,23 +173,22 @@ class _StateAreasPageState extends State<StateAreasPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void deleteData(String area) async {
-    areaNames.remove(area);
-    await LocalStore.saveAreaNames(areaNames);
-    await LocalStore.deleteDownloadedState(widget.state);
+  void deleteData(String state) async {
+    await LocalStore.deleteState(state);
     setState(() {
       isDownloaded = false;
     });
-
-    // Show a success message using a SnackBar
-    final snackBar = SnackBar(
-      content: Text('Areas successfully deleted!'),
-      duration: Duration(milliseconds: 1500),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void updateData(String area) {
-    // Perform the update logic here
+  void updateData(String state) async {
+    String areaName = 'New Area Name';
+    bool isLeaf = true;
+    List<Area> children = [];
+
+    await LocalStore.updateState(state, areaName, isLeaf, children);
+
+    setState(() {
+      isDownloaded = true;
+    });
   }
 }
