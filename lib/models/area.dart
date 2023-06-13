@@ -20,12 +20,11 @@ class Area {
 
     List<Area> children = [];
     if (map['children'] != null) {
-      final childrenData = map['children'] as List<dynamic>;
+      final childrenData = List<Map<String, dynamic>>.from(map['children'] as List);
       children = childrenData.map((data) => Area.fromMap(data)).toList();
     }
 
     return Area(areaName: areaName, isLeaf: isLeaf, children: children);
   }
-
 
 }

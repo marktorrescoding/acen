@@ -113,6 +113,8 @@ class _StateAreasPageState extends State<StateAreasPage> {
               ),
               builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
+                  // Log exception to console
+                  print('Query Exception: ${result.exception.toString()}');
                   return Text(result.exception.toString());
                 }
 
@@ -120,8 +122,17 @@ class _StateAreasPageState extends State<StateAreasPage> {
                   return CircularProgressIndicator();
                 }
 
-                List<Map<String, dynamic>> areas = List<Map<String, dynamic>>.from(result.data!['areas'][0]['children']);
+                // Log result data to console
+                //print('Query Result: ${result.data}');
+                print('areas data: ${result.data!['areas']}');
+                print('areas data: ${result.data!['areas']}');
 
+                List<Map<String, dynamic>> areas = [];
+                for (var area in result.data!['areas']) {
+                  if (area['children'] != null) {
+                    areas.addAll(List<Map<String, dynamic>>.from(area['children']));
+                  }
+                }
                 areasData = areas.map((areaData) => Area.fromMap(areaData)).toList();
 
                 return ListView.builder(

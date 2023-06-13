@@ -19,6 +19,16 @@ class SubAreasPage extends StatelessWidget {
 
           return ListTile(
             title: Text(subArea.areaName),
+            onTap: subArea.children.isNotEmpty
+                ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubAreasPage(area: subArea),
+                ),
+              );
+            }
+                : null, // do nothing if there are no further children
           );
         },
       ),
