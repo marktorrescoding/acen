@@ -1,7 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:openbeta/models/area.dart';
+import 'package:openbeta/models/climb.dart';
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:openbeta/models/area_adapter.dart'; // Add this line
 
 class LocalStore {
   static Future<void> saveAreas(Area areaData) async {
@@ -58,7 +61,7 @@ class LocalStore {
     await box.delete(state);
   }
 
-  static Future<void> updateState(String state, String areaName, bool isLeaf, List<Area> children) async {
+  static Future<void> updateState(String state, String areaName, bool isLeaf, List<Area> children, List<Climb> climbs) async { // Add climbs as an argument
     final box = await Hive.openBox<Area>('areasBox');
     final existingArea = box.get(state);
 
@@ -71,8 +74,24 @@ class LocalStore {
       areaName: areaName,
       isLeaf: isLeaf,
       children: children,
+      climbs: climbs, // Add this
     );
 
     await box.put(state, updatedArea);
+  }
+
+  static Future<void> saveClimb(Climb climb) async {
+    final box = await Hive.openBox<Climb>('climbsBox');
+    await box.put(climb.name, climb);
+  }
+
+  static Future<Climb?> getClimb(String climbName) async {
+    final box = await Hive.openBox<Climb>('climbsBox');
+    return box.get(climbName);
+  }
+
+  static Future<List<Climb>> getAllClimbs() async {
+    final box = await Hive.openBox<Climb>('climbsBox');
+    return box.values.toList();
   }
 }

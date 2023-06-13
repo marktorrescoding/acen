@@ -17,6 +17,8 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color iconColor = Color(0xFF33D6AA); // Choose one of the gradient colors
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -35,13 +37,14 @@ class CustomSearchBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  isSwitched ? Icons.wifi : Icons.wifi_off, // Display different icons
+                  isSwitched ? Icons.wifi : Icons.wifi_off,
                   size: 24.0,
-                  color: isSwitched ? Colors.green : Colors.green,
+                  color: iconColor,
                 ),
                 Switch(
                   value: isSwitched,
                   onChanged: onSwitched,
+                  activeColor: iconColor,
                 ),
               ],
             ),

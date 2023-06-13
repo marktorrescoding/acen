@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:openbeta/models/climb.dart';
 part 'area.g.dart';
 
 @HiveType(typeId: 0)
@@ -12,7 +13,15 @@ class Area {
   @HiveField(2)
   final List<Area> children;
 
-  Area({required this.areaName, required this.isLeaf, required this.children});
+  @HiveField(3)
+  final List<Climb> climbs;  // Add this
+
+  Area({
+    required this.areaName,
+    required this.isLeaf,
+    required this.children,
+    required this.climbs,  // Add this
+  });
 
   factory Area.fromMap(Map<String, dynamic> map) {
     final areaName = map['areaName'] as String;
@@ -24,7 +33,13 @@ class Area {
       children = childrenData.map((data) => Area.fromMap(data)).toList();
     }
 
-    return Area(areaName: areaName, isLeaf: isLeaf, children: children);
-  }
+    // Add this block
+    List<Climb> climbs = [];
+    if (map['climbs'] != null) {
+      final climbsData = List<Map<String, dynamic>>.from(map['climbs'] as List);
+      climbs = climbsData.map((data) => Climb.fromMap(data)).toList();
+    }
 
+    return Area(areaName: areaName, isLeaf: isLeaf, children: children, climbs: climbs);  // Add climbs here
+  }
 }

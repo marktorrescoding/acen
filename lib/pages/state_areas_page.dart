@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:openbeta/services/localstore.dart';
 import 'package:openbeta/models/area.dart';
+import 'package:openbeta/models/climb.dart';
+
 import 'package:openbeta/pages/subareaspage.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -111,7 +113,8 @@ class _StateAreasPageState extends State<StateAreasPage> {
               options: QueryOptions(
                 document: gql(readAreas),
               ),
-              builder: (QueryResult result, {VoidCallback? refetch, FetchMore? fetchMore}) {
+              builder: (QueryResult result,
+                  {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
                   // Log exception to console
                   print('Query Exception: ${result.exception.toString()}');
@@ -130,10 +133,12 @@ class _StateAreasPageState extends State<StateAreasPage> {
                 List<Map<String, dynamic>> areas = [];
                 for (var area in result.data!['areas']) {
                   if (area['children'] != null) {
-                    areas.addAll(List<Map<String, dynamic>>.from(area['children']));
+                    areas.addAll(
+                        List<Map<String, dynamic>>.from(area['children']));
                   }
                 }
-                areasData = areas.map((areaData) => Area.fromMap(areaData)).toList();
+                areasData =
+                    areas.map((areaData) => Area.fromMap(areaData)).toList();
 
                 return ListView.builder(
                   itemCount: areas.length,
@@ -171,18 +176,24 @@ class _StateAreasPageState extends State<StateAreasPage> {
   void saveData() async {
     for (var data in areasData) {
       await LocalStore.saveAreas(data);
+      for (var climb in data.climbs) {
+        await LocalStore.saveClimb(climb);
+      }
     }
     await LocalStore.saveDownloadedState(widget.state);
     setState(() {
       isDownloaded = true;
     });
 
-    final snackBar = SnackBar(
-      content: Text('Areas successfully downloaded!'),
-      duration: Duration(milliseconds: 1500),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Areas and routes successfully downloaded!'),
+        duration: Duration(milliseconds: 1500),
+      ),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+
 
   void deleteData(String state) async {
     await LocalStore.deleteState(state);
@@ -195,8 +206,9 @@ class _StateAreasPageState extends State<StateAreasPage> {
     String areaName = 'New Area Name';
     bool isLeaf = true;
     List<Area> children = [];
+    List<Climb> climbs = []; // provide this value according to your requirement
 
-    await LocalStore.updateState(state, areaName, isLeaf, children);
+    await LocalStore.updateState(state, areaName, isLeaf, children, climbs);
 
     setState(() {
       isDownloaded = true;

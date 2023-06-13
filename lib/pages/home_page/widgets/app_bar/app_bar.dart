@@ -12,7 +12,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.greenAccent, Colors.green], // Reversed the order of colors
+            colors: [Color(0xFF00CC99), Color(0xFF33D6AA)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -24,26 +24,18 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ShaderMask(
-              shaderCallback: (bounds) {
-                return LinearGradient(
-                  colors: [Colors.grey[800]!, Colors.black], // Reversed the order of colors
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ).createShader(bounds);
-              },
-              child: Text(
-                'Ascensus',
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 22,
-                ),
+            Text(
+              'Ascensus',
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 22,
+                color: Colors.white,
               ),
             ),
             SizedBox(width: 8),
             Icon(
               Icons.landscape,
-              color: Colors.black,
+              color: Colors.white,
               size: 24,
             ),
           ],
