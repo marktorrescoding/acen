@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:openbeta/models/climbing_route.dart';
-import 'package:openbeta/services/climb_service.dart';
-import 'package:openbeta/services/area_service.dart';
-import 'package:openbeta/services/test_connection_service.dart';
-import 'package:openbeta/services/local_database_service.dart';
-import 'package:openbeta/services/get_user_location_service.dart';
-import 'package:graphql/client.dart';
-import 'package:openbeta/pages/nearby_areas_page/helpers/nearby_areas_helper.dart';
 import 'package:provider/provider.dart'; // Import Provider
 import 'package:openbeta/services/my_projects.dart'; // Import MyProjects
-
 import 'widgets/search_bar.dart';
-import 'widgets/nearby_areas_button.dart';
-import 'widgets/nearby_areas.dart';
 import 'widgets/app_bar/app_bar.dart';
-import 'widgets/climbing_routes_list_view.dart';
 import 'package:openbeta/pages/regions.dart'; // Import the regions page
 
 class HomePage extends StatelessWidget {

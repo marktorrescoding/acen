@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:openbeta/pages/home_page/home_page.dart';
 import 'package:openbeta/effects/splash_screen.dart';
-import 'package:openbeta/services/test_connection_service.dart';
-import 'package:graphql/client.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:openbeta/models/area.dart';
 import 'package:provider/provider.dart';
-import 'package:openbeta/services/my_projects.dart';  // Assuming that MyProjects class is defined here
+import 'package:openbeta/services/my_projects.dart';
+import 'package:openbeta/services/graphql_client_service.dart';
+import 'package:openbeta/services/initialize_app_service.dart';
+import 'package:openbeta/models/routes.dart';
 
-void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(AreaAdapter());
-  final HttpLink httpLink = HttpLink('https://api.openbeta.io/graphql');
-  TestConnectionService(httpLink).testConnection();
-
-  final GraphQLClient client = GraphQLClient(
-    cache: GraphQLCache(),
-    link: httpLink,
-  );
-
-  runApp(MyApp(client: client));
+void main() {
+  initializeApp().then((_) {
+    final GraphQLClient client = setupGraphQLClient();
+    runApp(MyApp(client: client));
+  });
 }
 
 class MyApp extends StatelessWidget {
   final GraphQLClient client;
 
-  MyApp({required this.client});
+  const MyApp({required this.client});
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +31,9 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.green,
           ),
           home: SplashScreen(),
-          routes: {
-            '/home': (context) => HomePage(),
-          },
+          routes: Routes.routes, // Use routes from the Routes class
         ),
       ),
     );
   }
 }
-
