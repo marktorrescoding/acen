@@ -13,7 +13,7 @@ class ClimbsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final String fetchClimbs = '''
       query MyQuery(\$areaName: String!) {
-        areas(filter: {area_name: {match: \$areaName}}) {
+        areas(filter: {area_name: {match: \$areaName, exactMatch: true}}) {
           climbs {
             name
             yds

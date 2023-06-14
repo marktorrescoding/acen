@@ -7,17 +7,15 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:openbeta/models/area.dart';
-
-
+import 'package:provider/provider.dart';
+import 'package:openbeta/services/my_projects.dart';  // Assuming that MyProjects class is defined here
 
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(AreaAdapter());
-  // Initialize HttpLink with your GraphQL endpoint.
   final HttpLink httpLink = HttpLink('https://api.openbeta.io/graphql');
-  TestConnectionService(httpLink).testConnection(); // call the testConnection method
+  TestConnectionService(httpLink).testConnection();
 
-  // Pass your HttpLink to the client
   final GraphQLClient client = GraphQLClient(
     cache: GraphQLCache(),
     link: httpLink,
@@ -33,18 +31,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GraphQLProvider(
-      client: ValueNotifier(client),
-      child: MaterialApp(
-        title: 'Climbing App',
-        theme: ThemeData(
-          primarySwatch: Colors.green,
+    return ChangeNotifierProvider(
+      create: (_) => MyProjects(),
+      child: GraphQLProvider(
+        client: ValueNotifier(client),
+        child: MaterialApp(
+          title: 'Climbing App',
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+          ),
+          home: SplashScreen(),
+          routes: {
+            '/home': (context) => HomePage(),
+          },
         ),
-        home: SplashScreen(), // Set the SplashScreen as the initial screen
-        routes: {
-          '/home': (context) => HomePage(),
-        },
       ),
     );
   }
 }
+

@@ -4,7 +4,6 @@ import 'package:openbeta/models/climb.dart';
 
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:openbeta/models/area_adapter.dart'; // Add this line
 
 class LocalStore {
   static Future<void> saveAreas(Area areaData) async {
