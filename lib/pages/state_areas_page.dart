@@ -7,6 +7,8 @@ import 'package:openbeta/models/climb.dart';
 import 'package:openbeta/pages/subareaspage.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:openbeta/pages/climbs_page.dart'; // And also import the ClimbsPage
+
 
 class StateAreasPage extends StatefulWidget {
   final String state;
@@ -148,12 +150,23 @@ class _StateAreasPageState extends State<StateAreasPage> {
 
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubAreasPage(area: area),
-                          ),
-                        );
+                        if (area.isLeaf) {
+                          // If the area is a leaf (no subareas), navigate to the ClimbsPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ClimbsPage(area: area),
+                            ),
+                          );
+                        } else {
+                          // If the area has subareas, navigate to the SubAreasPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SubAreasPage(area: area),
+                            ),
+                          );
+                        }
                       },
                       child: ListTile(
                         title: Text(area.areaName),
