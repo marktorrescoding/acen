@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import Provider
-import 'package:openbeta/services/my_projects.dart'; // Import MyProjects
+import 'package:provider/provider.dart';
+import 'package:openbeta/services/my_projects.dart';
+import 'package:openbeta/pages/regions.dart';
+
+// Widget imports
 import 'widgets/search_bar.dart';
 import 'widgets/app_bar/app_bar.dart';
-import 'package:openbeta/pages/regions.dart'; // Import the regions page
-import 'package:openbeta/pages/home_page/widgets/MyProjectsSection.dart';
+import 'widgets/MyProjectsSection.dart';
+import 'widgets/custom_button_widget.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -30,7 +33,7 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CustomButton(
-                        text: 'Regions',
+                        text: 'Cata',
                         icon: Icons.location_on,
                         onPressed: () => Navigator.push(
                           context,
@@ -45,44 +48,16 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16), // Add spacing between the buttons and "My Projects"
-                  MyProjectsSection(projects: myProjects.projects),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16), // Add horizontal padding
+                    child: MyProjectsSection(projects: myProjects.projects),
+                  ),
                 ],
               ),
             ),
           ),
         );
       },
-    );
-  }
-}
-
-
-class CustomButton extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const CustomButton({
-    required this.text,
-    required this.icon,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, color: Colors.black),
-      label: Text(
-        text,
-        style: TextStyle(color: Colors.black),
-      ),
-      style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
     );
   }
 }

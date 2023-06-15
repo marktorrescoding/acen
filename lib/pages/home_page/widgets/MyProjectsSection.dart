@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:openbeta/pages/regions.dart';
+
 
 class MyProjectsSection extends StatelessWidget {
   final List<String> projects;
@@ -23,23 +25,44 @@ class MyProjectsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'My Projects',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              Icon(Icons.list),
+              SizedBox(width: 8),
+              Text(
+                'My Projects',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 8),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: projects.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(projects[index]),
-              );
-            },
-          ),
+          if (projects.isEmpty)
+            Column(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RegionPage()),
+
+                    );
+                  },
+                  child: Text('Add Project'),
+                ),
+              ],
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: projects.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(projects[index]),
+                );
+              },
+            ),
         ],
       ),
     );
