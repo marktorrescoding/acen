@@ -4,6 +4,7 @@ import 'package:openbeta/services/my_projects.dart'; // Import MyProjects
 import 'widgets/search_bar.dart';
 import 'widgets/app_bar/app_bar.dart';
 import 'package:openbeta/pages/regions.dart'; // Import the regions page
+import 'package:openbeta/pages/home_page/widgets/MyProjectsSection.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -28,7 +29,7 @@ class HomePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Button(
+                      CustomButton(
                         text: 'Regions',
                         icon: Icons.location_on,
                         onPressed: () => Navigator.push(
@@ -36,7 +37,7 @@ class HomePage extends StatelessWidget {
                           MaterialPageRoute(builder: (context) => RegionPage()),
                         ),
                       ),
-                      Button(
+                      CustomButton(
                         text: 'Areas Near Me',
                         icon: Icons.near_me,
                         onPressed: () {},
@@ -44,42 +45,7 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16), // Add spacing between the buttons and "My Projects"
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'My Projects',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: myProjects.projects.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(myProjects.projects[index]),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                  MyProjectsSection(projects: myProjects.projects),
                 ],
               ),
             ),
@@ -90,12 +56,13 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class Button extends StatelessWidget {
+
+class CustomButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final VoidCallback onPressed;
 
-  const Button({
+  const CustomButton({
     required this.text,
     required this.icon,
     required this.onPressed,
