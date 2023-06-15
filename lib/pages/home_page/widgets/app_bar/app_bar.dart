@@ -9,15 +9,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00CC99), Color(0xFF33D6AA)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-      ),
+      backgroundColor: Colors.transparent, // Set the background color to transparent
+      elevation: 0, // Remove the shadow
       centerTitle: true,
       leading: Container(),
       title: IntrinsicWidth(

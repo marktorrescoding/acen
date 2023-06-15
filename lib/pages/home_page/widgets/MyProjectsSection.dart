@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openbeta/pages/regions.dart';
+import 'package:openbeta/pages/ClimbInfoPage.dart';
+import 'package:openbeta/models/climb.dart';
 
 class MyProjectsSection extends StatelessWidget {
   final List<Map<String, String>> projects;  // Modify the projects list to hold Maps
@@ -43,7 +45,8 @@ class MyProjectsSection extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context,
+                    Navigator.push(
+                      context,
                       MaterialPageRoute(builder: (context) => RegionPage()),
                     );
                   },
@@ -56,17 +59,27 @@ class MyProjectsSection extends StatelessWidget {
               shrinkWrap: true,
               itemCount: projects.length,
               itemBuilder: (context, index) {
+                final projectName = projects[index]['name'];
+                final projectGrade = projects[index]['grade'];
                 return ListTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(projects[index]['name'] ?? ''), // Display the project name
-                      Text(projects[index]['grade'] ?? '', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)), // Display the grade right justified
+                      Text(projectName ?? ''),
+                      Text(projectGrade ?? '', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
                     ],
                   ),
+                  onTap: () {
+                    final climb = Climb(name: projectName ?? '', yds: '', content: ClimbContent(description: '', location: '', protection: ''));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ClimbInfoPage(climb: climb)),
+                    );
+                  },
                 );
               },
             ),
+
         ],
       ),
     );
