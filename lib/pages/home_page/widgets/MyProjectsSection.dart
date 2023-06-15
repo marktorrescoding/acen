@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:openbeta/pages/regions.dart';
 
-
 class MyProjectsSection extends StatelessWidget {
-  final List<String> projects;
+  final List<Map<String, String>> projects;  // Modify the projects list to hold Maps
 
   const MyProjectsSection({required this.projects});
 
@@ -46,7 +45,6 @@ class MyProjectsSection extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(context,
                       MaterialPageRoute(builder: (context) => RegionPage()),
-
                     );
                   },
                   child: Text('Add Project'),
@@ -59,7 +57,13 @@ class MyProjectsSection extends StatelessWidget {
               itemCount: projects.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(projects[index]),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(projects[index]['name'] ?? ''), // Display the project name
+                      Text(projects[index]['grade'] ?? '', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)), // Display the grade right justified
+                    ],
+                  ),
                 );
               },
             ),

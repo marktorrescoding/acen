@@ -59,17 +59,33 @@ class ClimbsPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final climb = climbs[index];
 
-              return ListTile(
-                title: Text(climb.name),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ClimbInfoPage(climb: climb),
-                    ),
-                  );
-                },
-              );
+              return
+                ListTile(
+                  title: Row(
+                    children: <Widget>[
+                      Text(climb.name, style: TextStyle()),
+                      Expanded(
+                        child: Text(
+                          climb.yds,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: 16.0, // adjust the font size to your need
+                            color: Colors.black, // adjust the color to your need
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClimbInfoPage(climb: climb),
+                      ),
+                    );
+                  },
+                );
+
             },
           );
         },

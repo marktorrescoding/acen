@@ -12,7 +12,8 @@ class ClimbInfoPage extends StatelessWidget {
     // Get the instance of MyProjects using Provider
     final myProjects = Provider.of<MyProjects>(context, listen: false);
     // Add the route name to "My Projects"
-    myProjects.addProject(climb.name);
+    myProjects.addProject(climb.name, climb.yds);
+
   }
 
   @override

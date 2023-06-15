@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CustomButton(
-                        text: 'Cata',
+                        text: 'Catalog',
                         icon: Icons.location_on,
                         onPressed: () => Navigator.push(
                           context,
