@@ -84,7 +84,7 @@ class _StateAreasPageState extends State<StateAreasPage> {
                   {VoidCallback? refetch, FetchMore? fetchMore}) {
                 if (result.hasException) {
                   // Log exception to console
-                  print('Query Exception: ${result.exception.toString()}');
+                  //print('Query Exception: ${result.exception.toString()}');
                   return Text(result.exception.toString());
                 }
 
@@ -94,8 +94,8 @@ class _StateAreasPageState extends State<StateAreasPage> {
 
                 // Log result data to console
                 //print('Query Result: ${result.data}');
-                print('areas data: ${result.data!['areas']}');
-                print('areas data: ${result.data!['areas']}');
+                //print('areas data: ${result.data!['areas']}');
+                //print('areas data: ${result.data!['areas']}');
 
                 List<Map<String, dynamic>> areas = [];
                 for (var area in result.data!['areas']) {
