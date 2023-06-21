@@ -14,18 +14,23 @@ class Area {
   final List<Area> children;
 
   @HiveField(3)
-  final List<Climb> climbs;  // Add this
+  final List<Climb> climbs;
+
+  @HiveField(4)  // Add this
+  final String uuid;  // Add this
 
   Area({
     required this.areaName,
     required this.isLeaf,
     required this.children,
-    required this.climbs,  // Add this
+    required this.climbs,
+    required this.uuid,  // Add this
   });
 
   factory Area.fromMap(Map<String, dynamic> map) {
     final areaName = map['areaName'] as String;
     final isLeaf = map['metadata']['leaf'] as bool;
+    final uuid = map['uuid'] as String;  // Add this
 
     List<Area> children = [];
     if (map['children'] != null) {
@@ -33,13 +38,12 @@ class Area {
       children = childrenData.map((data) => Area.fromMap(data)).toList();
     }
 
-    // Add this block
     List<Climb> climbs = [];
     if (map['climbs'] != null) {
       final climbsData = List<Map<String, dynamic>>.from(map['climbs'] as List);
       climbs = climbsData.map((data) => Climb.fromMap(data)).toList();
     }
 
-    return Area(areaName: areaName, isLeaf: isLeaf, children: children, climbs: climbs);  // Add climbs here
+    return Area(areaName: areaName, isLeaf: isLeaf, children: children, climbs: climbs, uuid: uuid);  // Add uuid here
   }
 }

@@ -21,13 +21,14 @@ class AreaAdapter extends TypeAdapter<Area> {
       isLeaf: fields[1] as bool,
       children: (fields[2] as List).cast<Area>(),
       climbs: (fields[3] as List).cast<Climb>(),
+      uuid: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Area obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.areaName)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class AreaAdapter extends TypeAdapter<Area> {
       ..writeByte(2)
       ..write(obj.children)
       ..writeByte(3)
-      ..write(obj.climbs);
+      ..write(obj.climbs)
+      ..writeByte(4)
+      ..write(obj.uuid);
   }
 
   @override

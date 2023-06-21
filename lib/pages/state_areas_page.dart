@@ -184,7 +184,7 @@ class _StateAreasPageState extends State<StateAreasPage> {
     List<Area> children = [];
     List<Climb> climbs = []; // provide this value according to your requirement
 
-    await LocalStore.updateState(state, areaName, isLeaf, children, climbs);
+    //await LocalStore.updateState(state, areaName, isLeaf, children, climbs, uuid);
 
     setState(() {
       isDownloaded = true;

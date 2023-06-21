@@ -60,7 +60,7 @@ class LocalStore {
     await box.delete(state);
   }
 
-  static Future<void> updateState(String state, String areaName, bool isLeaf, List<Area> children, List<Climb> climbs) async { // Add climbs as an argument
+  static Future<void> updateState(String state, String areaName, bool isLeaf, List<Area> children, List<Climb> climbs, String uuid) async {
     final box = await Hive.openBox<Area>('areasBox');
     final existingArea = box.get(state);
 
@@ -73,11 +73,13 @@ class LocalStore {
       areaName: areaName,
       isLeaf: isLeaf,
       children: children,
-      climbs: climbs, // Add this
+      climbs: climbs,
+      uuid: uuid,  // Add this
     );
 
     await box.put(state, updatedArea);
   }
+
 
   static Future<void> saveClimb(Climb climb) async {
     final box = await Hive.openBox<Climb>('climbsBox');

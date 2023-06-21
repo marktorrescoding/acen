@@ -4,26 +4,31 @@ String getAreasQuery(String state) {
       areas(filter: {area_name: {match: "$state"}}) {
         children {
           areaName
+          uuid
           metadata {
             leaf
           }
           children {
             areaName
+            uuid
             metadata {
               leaf
             }
             children {
               areaName
+              uuid
               metadata {
                 leaf
               }
               children {
                 areaName
+                uuid
                 metadata {
                   leaf
                 }
                 children {
                   areaName
+                  uuid
                   metadata {
                     leaf
                   }
