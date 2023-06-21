@@ -8,7 +8,7 @@ import 'package:openbeta/pages/subareaspage.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:openbeta/pages/climbs_page.dart'; // And also import the ClimbsPage
-
+import 'package:openbeta/API_queries/getAreasQuery.dart';
 
 class StateAreasPage extends StatefulWidget {
   final String state;
@@ -40,42 +40,7 @@ class _StateAreasPageState extends State<StateAreasPage> {
 
   @override
   Widget build(BuildContext context) {
-    String readAreas = """
-      query MyQuery {
-        areas(filter: {area_name: {match: "${widget.state}"}}) {
-          children {
-            areaName
-            metadata {
-              leaf
-            }
-            children {
-              areaName
-              metadata {
-                leaf
-              }
-              children {
-                areaName
-                metadata {
-                  leaf
-                }
-                children {
-                  areaName
-                  metadata {
-                    leaf
-                  }
-                  children {
-                    areaName
-                    metadata {
-                      leaf
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    """;
+    String readAreas = getAreasQuery(widget.state);
 
     return Scaffold(
       appBar: AppBar(
@@ -205,8 +170,6 @@ class _StateAreasPageState extends State<StateAreasPage> {
       ),
     );
   }
-
-
 
   void deleteData(String state) async {
     await LocalStore.deleteState(state);
